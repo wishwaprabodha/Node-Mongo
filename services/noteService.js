@@ -54,7 +54,7 @@ function editNote(req, res) {
 
 function deleteNote(req, res) {
     let id=parseInt(req.params.noteId);
-    dbConn.collection('quotes').findOneAndDelete({noteId: id}, (err, result) => {
+    dbConn.collection('notes').findOneAndDelete({noteId: id}, (err, result) => {
         if (err) return res.send(500, err);
         res.send(result);
     });
