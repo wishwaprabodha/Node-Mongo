@@ -18,10 +18,10 @@ function getNote(req, res) {
 }
 
 function searchNote(req, res) {
-    dbConn.collection('notes').findOne({noteId: req.params.noteId}, (err, document)=> {
-
+    let data=parseInt(req.params.noteId);
+    dbConn.collection('notes').findOne({noteId: data}, (err, result)=> {
         if (err) return console.log(err);
-        res.send(document)
+        res.send(result)
     });
 
 
@@ -31,13 +31,13 @@ function addNote(data) {
     dbConn.collection('notes').insertOne(data, (err, result) => {
         if (err) return console.log(err);
         console.log('saved to database ');
-        console.log(result);
     });
 }
 
 function editNote(req, res) {
+    let id=parseInt(req.params.noteId);
     dbConn.collection('notes')
-        .findOneAndUpdate({noteId: req.body.noteId}, {
+        .findOneAndUpdate({noteId: id}, {
             $set: {
                 noteTitle: req.body.noteTitle,
                 note: req.body.note,
@@ -53,9 +53,10 @@ function editNote(req, res) {
 }
 
 function deleteNote(req, res) {
-    dbConn.collection('quotes').findOneAndDelete({noteId: req.body.noteId}, (err, result) => {
+    let id=parseInt(req.params.noteId);
+    dbConn.collection('quotes').findOneAndDelete({noteId: id}, (err, result) => {
         if (err) return res.send(500, err);
-        console.log(result);
+        res.send(result);
     });
 }
 

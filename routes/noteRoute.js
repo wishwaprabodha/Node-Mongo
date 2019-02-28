@@ -9,8 +9,8 @@ noteRouter.get('/', (req, res) => {
 });
 
 noteRouter.get('/:noteId',  (req, res)=> {
-    console.log(req.body.noteId);
-    noteService.search(req, res);
+    console.log(req.params.noteId);
+    noteService.search(req ,res);
 });
 
 
