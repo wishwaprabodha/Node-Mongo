@@ -1,42 +1,32 @@
-let MongoClient = require('mongodb').MongoClient;
-let dbConn='';
-let url = 'mongodb://localhost:27017';
-MongoClient.connect(url)
-    .then((client)=> {
-        dbConn=client.db('note');
-        console.log('Connected to DB');
-    })
-    .catch( (err)=> {
-        console.log(err);
-    });
+let dbConn=require('./db');
 
-function getNote(req, res) {
-    dbConn.collection('notes').find().toArray((err, result) => {
+dbConn.con(function(){
+
+    module.exports.get= function getNote(req, res) {
+    dbConn.db.collection('notes').find().toArray((err, result) => {
         if (err) return console.log(err);
         res.send(result);
-    });
-}
+        });
+    };
 
-function searchNote(req, res) {
+    module.exports.search=function searchNote(req, res) {
     let data=parseInt(req.params.noteId);
-    dbConn.collection('notes').findOne({noteId: data}, (err, result)=> {
+    dbConn.db.collection('notes').findOne({noteId: data}, (err, result)=> {
         if (err) return console.log(err);
         res.send(result)
-    });
+        });
+    };
 
-
-}
-
-function addNote(data) {
-    dbConn.collection('notes').insertOne(data, (err, result) => {
+    module.exports.add=function addNote(data) {
+    dbConn.db.collection('notes').insertOne(data, (err) => {
         if (err) return console.log(err);
         console.log('saved to database ');
-    });
-}
+        });
+    };
 
-function editNote(req, res) {
+    module.exports.edit=function editNote(req, res) {
     let id=parseInt(req.params.noteId);
-    dbConn.collection('notes')
+    dbConn.db.collection('notes')
         .findOneAndUpdate({noteId: id}, {
             $set: {
                 noteTitle: req.body.noteTitle,
@@ -50,22 +40,15 @@ function editNote(req, res) {
             if (err) return res.send(err);
             res.send(result)
         })
-}
+    };
 
-function deleteNote(req, res) {
+    module.exports.delete=function deleteNote(req, res) {
     let id=parseInt(req.params.noteId);
-    dbConn.collection('notes').findOneAndDelete({noteId: id}, (err, result) => {
+    dbConn.db.collection('notes').findOneAndDelete({noteId: id}, (err, result) => {
         if (err) return res.send(500, err);
         res.send(result);
-    });
-}
+        });
+    };
 
-module.exports = {
-    get: getNote,
-    add: addNote,
-    edit: editNote,
-    search: searchNote,
-    delete: deleteNote
-};
-
+});
 
